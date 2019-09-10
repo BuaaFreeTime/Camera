@@ -132,13 +132,13 @@ public class CameraActivity extends Activity {
             fileName = "IMG_" + timeStamp + ".jpg";
             File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),
                     "/images/" + fileName);
-
+            
             // Create the storage directory if it does not exist
             if (!file.getParentFile().exists() &&
                     !file.getParentFile().mkdirs()) {
                 Log.e("write photo", "failed to create directory");
             }
-            
+
             // let the photo turn back 90° because when we capture the photo already turn 90°
             Bitmap photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             Matrix matrix = new Matrix();
