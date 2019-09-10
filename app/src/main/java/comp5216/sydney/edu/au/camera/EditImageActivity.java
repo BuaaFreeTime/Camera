@@ -29,6 +29,7 @@ public class EditImageActivity extends Activity {
     ImageView editImageView;
     int bitmapNumber = -1;
     ArrayList<Bitmap> bitmaps;
+    Uri deleteUri;
 
     MarshmallowPermission marshmallowPermission = new MarshmallowPermission(this);
 
@@ -67,7 +68,8 @@ public class EditImageActivity extends Activity {
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // User cancelled the dialog
-                        // Nothing happens
+                        setResult(RESULT_CANCELED, getIntent());
+                        finish(); // closes the activity, pass data to parent
                     }
                 });
         builder.create().show();
@@ -85,6 +87,7 @@ public class EditImageActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bitmap cropBitmap = data.getExtras().getParcelable("data");
         renewImageView(cropBitmap);
+        getContentResolver().delete(deleteUri, null, null);
     }
 
     public void onClick(View view) {
@@ -103,8 +106,8 @@ public class EditImageActivity extends Activity {
 
         if (view.getId() == R.id.crop) {
             Intent intent = new Intent("com.android.camera.action.CROP");
-            Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmaps.get(bitmapNumber), null,null));
-            intent.setDataAndType(uri, "image/*");
+            deleteUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmaps.get(bitmapNumber), null,null));
+            intent.setDataAndType(deleteUri, "image/*");
             intent.putExtra("return-data", true);
             startActivityForResult(intent, 1);
         }
