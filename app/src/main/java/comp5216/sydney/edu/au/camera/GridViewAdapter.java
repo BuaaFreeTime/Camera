@@ -2,7 +2,7 @@ package comp5216.sydney.edu.au.camera;
 
 import android.content.Context;
 
-import android.net.Uri;
+
 import android.view.View;
 import android.view.ViewGroup;
 
