@@ -34,6 +34,10 @@
             android:name=".PhotoPreviewActivity"
             android:label="Camera" >
         </activity>
+        <activity
+            android:name=".EditImageActivity"
+            android:label="Camera" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

@@ -2,6 +2,7 @@ package comp5216.sydney.edu.au.camera;
 
 import android.content.Context;
 
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,6 +29,10 @@ public class GridViewAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         return imageList.get(position);
+    }
+
+    public String getItemPath(int position) {
+        return imageList.get(position).getImagePath();
     }
 
     @Override

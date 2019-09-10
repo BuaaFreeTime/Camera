@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Camera</string>
+    <string name="dialog_save_title">Save the image</string>
+    <string name="dialog_save_msg">Do you want to save this edit? Click No will quit and the edit will miss</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

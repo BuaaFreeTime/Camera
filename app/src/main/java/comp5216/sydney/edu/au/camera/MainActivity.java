@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,8 +36,10 @@ public class MainActivity extends AppCompatActivity {
     public String videoFileName = "video.mp4";
     public String audioFileName = "audio.3gp";
     //request codes
-    private static final int MY_PERMISSIONS_REQUEST_OPEN_CAMERA = 101;
-    private static final int MY_PERMISSIONS_REQUEST_READ_PHOTOS = 102;
+    public final int MY_PERMISSIONS_REQUEST_OPEN_CAMERA = 101;
+    public final int MY_PERMISSIONS_REQUEST_READ_PHOTOS = 102;
+    public final int EDIT_ITEM_REQUEST_CODE = 647;
+    public final int TAKE_PHOTO_CODE = 648;
 
     MarshmallowPermission marshmallowPermission = new MarshmallowPermission(this);
 
@@ -58,7 +61,11 @@ public class MainActivity extends AppCompatActivity {
         }
         gridViewAdapter = new GridViewAdapter(this, imageList);
         gridView.setAdapter(gridViewAdapter);
+
+        setupGridViewListener();
     }
+
+
 
 
     public void readImage() {
@@ -82,6 +89,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void setupGridViewListener() {
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String photoPath = gridViewAdapter.getItemPath(position);
+                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+
+                if (intent != null) {
+                    intent.putExtra("path", photoPath);
+
+                    startActivityForResult(intent, EDIT_ITEM_REQUEST_CODE);
+                }
+            }
+        });
+    }
 
     // Returns the Uri for a photo/media stored on disk given the fileName and type
     public Uri getFileUri(String fileName, int type) {
@@ -127,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(MainActivity.this, CameraActivity.class);
 
-            startActivityForResult(intent,1);
+            startActivityForResult(intent,TAKE_PHOTO_CODE);
 
             //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -164,11 +187,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
-        ImageInfo imageInfo = new ImageInfo(data.getStringExtra("path"));
-        imageList.add(imageInfo);
-        sortByDate();
-        gridViewAdapter.notifyDataSetChanged();
+        if (requestCode == EDIT_ITEM_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                ImageInfo imageInfo = new ImageInfo(data.getStringExtra("path"));
+                imageList.add(imageInfo);
+                sortByDate();
+                gridViewAdapter.notifyDataSetChanged();
+            }
+        }
+        if (requestCode == TAKE_PHOTO_CODE) {
+            ImageInfo imageInfo = new ImageInfo(data.getStringExtra("path"));
+            imageList.add(imageInfo);
+            sortByDate();
+            gridViewAdapter.notifyDataSetChanged();
+        }
         /*
         ImageView ivPreview = (ImageView) findViewById(R.id.photopreview);
        // mVideoView.setVisibility(View.GONE);
