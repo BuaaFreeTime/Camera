@@ -122,41 +122,46 @@ public class CameraActivity extends Activity {
 
     private String saveFile(byte[] bytes) {
         // a method of save photo file
+        if (!marshmallowPermission.checkPermissionForExternalStorage()) {
+            marshmallowPermission.requestPermissionForExternalStorage();
+            Log.e("write photo", "hey");
+            return null;
+        } else {
+            String fileName;
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+                    Locale.getDefault()).format(new Date());
+            fileName = "IMG_" + timeStamp + ".jpg";
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/images/" + fileName);
 
-        String fileName;
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-                Locale.getDefault()).format(new Date());
-        fileName = "IMG_" + timeStamp + ".jpg";
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "/images/" + fileName);
-
-        // Create the storage directory if it does not exist
-        if (!file.getParentFile().exists() &&
-                !file.getParentFile().mkdirs()) {
-            Log.d("write photo", "failed to create directory");
+            // Create the storage directory if it does not exist
+            if (!file.getParentFile().exists() &&
+                    !file.getParentFile().mkdirs()) {
+                Log.e("write photo", "failed to create directory");
+            }
+            // let the photo turn back 90° because when we capture the photo already turn 90°
+            Bitmap photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            photo = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true);
+            // save data locally
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                photo.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                //fos.write(photo);
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("write photo", "Write Photo error");
+            }
+            try {
+                MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), fileName, null);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Log.e("write photo", "File not found");
+            }
+            return file.getAbsolutePath();
         }
-        // let the photo turn back 90° because when we capture the photo already turn 90°
-        Bitmap photo = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        photo = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true);
-        // save data locally
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            //fos.write(photo);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("write photo", "Write Photo error");
-        }
-        try {
-            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), fileName, null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.e("write photo", "File not found");
-        }
-        return file.getAbsolutePath();
     }
 
 
