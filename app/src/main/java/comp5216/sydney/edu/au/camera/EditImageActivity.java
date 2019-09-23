@@ -1,3 +1,7 @@
+/*
+ * Copyright 2019 by BuaaFreeTime
+ */
+
 package comp5216.sydney.edu.au.camera;
 
 import android.app.Activity;
@@ -25,11 +29,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class EditImageActivity extends Activity {
+    // An activity for edit function
 
-    ImageView editImageView;
-    int bitmapNumber = -1;
-    ArrayList<Bitmap> bitmaps;
-    Uri deleteUri;
+    // define var
+    ImageView editImageView;      // editing image
+    int bitmapNumber = -1;        // the position of editing image
+    ArrayList<Bitmap> bitmaps;    // save all stage of editing image
+    Uri deleteUri;                // delete useless photo
 
     MarshmallowPermission marshmallowPermission = new MarshmallowPermission(this);
 
@@ -76,6 +82,7 @@ public class EditImageActivity extends Activity {
 
     }
 
+    // set the newest image into the image view
     private void renewImageView(Bitmap bitmap) {
         bitmapNumber++;
         bitmaps.add(bitmap);
@@ -90,6 +97,7 @@ public class EditImageActivity extends Activity {
         getContentResolver().delete(deleteUri, null, null);
     }
 
+    // set up button function
     public void onClick(View view) {
 
         // rotate function
@@ -98,15 +106,18 @@ public class EditImageActivity extends Activity {
             Bitmap originalBitmap = bitmaps.get(bitmapNumber);
             Matrix matrix = new Matrix();
             matrix.postRotate(90);
-            rotateBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(), originalBitmap.getHeight(),
+            rotateBitmap = Bitmap.createBitmap(originalBitmap, 0, 0,
+                    originalBitmap.getWidth(), originalBitmap.getHeight(),
                     matrix, true);
 
             renewImageView(rotateBitmap);
         }
 
+        // crop function
         if (view.getId() == R.id.crop) {
             Intent intent = new Intent("com.android.camera.action.CROP");
-            deleteUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmaps.get(bitmapNumber), null,null));
+            deleteUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),
+                    bitmaps.get(bitmapNumber), null,null));
             intent.setDataAndType(deleteUri, "image/*");
             intent.putExtra("return-data", true);
             startActivityForResult(intent, 1);
@@ -123,6 +134,7 @@ public class EditImageActivity extends Activity {
         }
     }
 
+    // save image locally
     private String saveFile(Bitmap saveBitmap) {
         // a method of save photo file
         if (!marshmallowPermission.checkPermissionForExternalStorage()) {
@@ -154,7 +166,8 @@ public class EditImageActivity extends Activity {
                 Log.e("write edit photo", "Write Photo error");
             }
             try {
-                MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), fileName, null);
+                MediaStore.Images.Media.insertImage(getContentResolver(),
+                        file.getAbsolutePath(), fileName, null);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Log.e("write edit photo", "File not found");

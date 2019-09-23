@@ -1,3 +1,7 @@
+/*
+ * Copyright 2019 by BuaaFreeTime
+ */
+
 package comp5216.sydney.edu.au.camera;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +16,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
     public final int EDIT_ITEM_REQUEST_CODE = 647;
     public final int TAKE_PHOTO_CODE = 648;
 
+    // set permission
     MarshmallowPermission marshmallowPermission = new MarshmallowPermission(this);
 
+    // define var
     private ArrayList<ImageInfo> imageList;
     private GridViewAdapter gridViewAdapter;
     private GridView gridView;
@@ -46,16 +51,19 @@ public class MainActivity extends AppCompatActivity {
         setupGridViewListener();
     }
 
+    // read photo from local save
     public void readImage() {
         if (!marshmallowPermission.checkPermissionForReadfiles()) {
             marshmallowPermission.requestPermissionForReadfiles();
         } else {
             imageList = new ArrayList<ImageInfo>();
             Cursor cursor = getContentResolver().query(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    null, null, null, null);
             try {
                 while (cursor.moveToNext()) {
-                    String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    String path = cursor.getString(
+                            cursor.getColumnIndex(MediaStore.Images.Media.DATA));
                     ImageInfo imageInfo = new ImageInfo(path);
                     imageList.add(imageInfo);
                 }
@@ -66,13 +74,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // set up a listener
     private void setupGridViewListener() {
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String photoPath = gridViewAdapter.getItemPath(position);
-                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+                Intent intent = new Intent(MainActivity.this,
+                        EditImageActivity.class);
 
                 if (intent != null) {
                     intent.putExtra("path", photoPath);
@@ -83,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // handle take photo action
     public void onTakePhotoClick(View v) {
         // Check permissions
         if (!marshmallowPermission.checkPermissionForCamera()
@@ -118,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // a sort function
     public void sortByDate() {
         // A method to sort items by date
         Collections.sort(imageList, new Comparator<ImageInfo>() {

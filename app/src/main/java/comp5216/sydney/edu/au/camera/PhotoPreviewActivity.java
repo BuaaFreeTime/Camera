@@ -1,3 +1,7 @@
+/*
+ * Copyright 2019 by BuaaFreeTime
+ */
+
 package comp5216.sydney.edu.au.camera;
 
 import android.app.Activity;
@@ -10,6 +14,7 @@ import android.widget.ImageView;
 import java.io.File;
 
 public class PhotoPreviewActivity extends Activity {
+    // Photo preview activity, used for preview the photo just captured
 
     String path;
 

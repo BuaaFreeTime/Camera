@@ -1,3 +1,7 @@
+/*
+ * Copyright 2019 by BuaaFreeTime
+ */
+
 package comp5216.sydney.edu.au.camera;
 
 import android.content.Context;
@@ -13,6 +17,7 @@ import java.util.ArrayList;
 
 
 public class GridViewAdapter extends BaseAdapter {
+    // A adapter for grid view
     private Context context;
     private ArrayList<ImageInfo> imageList;
 

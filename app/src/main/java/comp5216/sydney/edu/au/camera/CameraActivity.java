@@ -1,3 +1,7 @@
+/*
+ * Copyright 2019 by BuaaFreeTime
+ */
+
 package comp5216.sydney.edu.au.camera;
 
 import android.app.Activity;
@@ -24,10 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+
 
 public class CameraActivity extends Activity {
-
+    // camera view activity
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
     private Camera camera = null;
@@ -75,6 +79,7 @@ public class CameraActivity extends Activity {
         }
     }
 
+    // capture button
     public void capture(View view) {
         camera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
@@ -82,7 +87,8 @@ public class CameraActivity extends Activity {
                 String path;
                 path = saveFile(bytes);
                 if (path != null) {
-                    Intent intent = new Intent(CameraActivity.this, PhotoPreviewActivity.class);
+                    Intent intent = new Intent(CameraActivity.this,
+                            PhotoPreviewActivity.class);
                     if (intent != null) {
                         intent.putExtra("path", path);
                         startActivityForResult(intent, 1);
@@ -95,6 +101,7 @@ public class CameraActivity extends Activity {
         });
     }
 
+    // open camera function
     private void openCamera() {
         // a method of open camera
         camera = Camera.open();
@@ -111,6 +118,7 @@ public class CameraActivity extends Activity {
         camera.startPreview();
     }
 
+    // stop camera function
     private void stopCamera() {
         // a method of stop camera
         if (camera != null) {
@@ -120,6 +128,7 @@ public class CameraActivity extends Activity {
         }
     }
 
+    // save file locally
     private String saveFile(byte[] bytes) {
         // a method of save photo file
         if (!marshmallowPermission.checkPermissionForExternalStorage()) {
@@ -157,7 +166,8 @@ public class CameraActivity extends Activity {
                 Log.e("write photo", "Write Photo error");
             }
             try {
-                MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), fileName, null);
+                MediaStore.Images.Media.insertImage(getContentResolver(),
+                        file.getAbsolutePath(), fileName, null);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Log.e("write photo", "File not found");

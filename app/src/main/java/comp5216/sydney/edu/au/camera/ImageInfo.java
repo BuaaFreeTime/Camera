@@ -1,11 +1,12 @@
+/*
+ * Copyright 2019 by BuaaFreeTime
+ */
+
 package comp5216.sydney.edu.au.camera;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
-import android.widget.ImageView;
 
-import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.util.Date;
